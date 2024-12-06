@@ -8,3 +8,15 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+
+# Environment variables
+.env
