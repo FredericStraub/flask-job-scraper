@@ -1,0 +1,42 @@
+/* static/styles.css */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.card-header h5 {
+    margin: 0;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.description-content {
+    display: none;
+    white-space: pre-wrap;
+}
+
+.description-toggle {
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: underline;
+}
+
+#loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}

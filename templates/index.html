@@ -1,0 +1,191 @@
+<!-- templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Job Search</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">Smart Job Search</a>
+    </nav>
+
+    <div class="container my-4">
+        <!-- Scrape Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Search Jobs</h5>
+            </div>
+            <div class="card-body">
+                <form id="scrape-form">
+                    <div class="form-group">
+                        <label for="search_term">Search Term</label>
+                        <input type="text" class="form-control" id="search_term" name="search_term" placeholder="e.g., People Analyst">
+                        <small class="form-text text-muted">Leave empty if none.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="google_search_term">Google Search Term</label>
+                        <input type="text" class="form-control" id="google_search_term" name="google_search_term" placeholder="e.g., People analytics jobs in the USA">
+                        <small class="form-text text-muted">Leave empty if none.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="results_wanted">Results Wanted</label>
+                        <input type="number" class="form-control" id="results_wanted" name="results_wanted" value="100" min="1">
+                        <small class="form-text text-muted">Number of job results to retrieve.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hours_old">Hours Old</label>
+                        <input type="number" class="form-control" id="hours_old" name="hours_old" value="500" min="0">
+                        <small class="form-text text-muted">Filter jobs by the number of hours since posted.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" class="form-control" id="location" name="location" placeholder="e.g., USA">
+                        <small class="form-text text-muted">Leave empty if none.</small>
+                    </div>
+
+                    <!-- Country Dropdown -->
+                    <div class="form-group">
+                        <label for="country_indeed">Country (Indeed & Glassdoor)</label>
+                        <select class="form-control" id="country_indeed" name="country_indeed">
+                            <option value="">Select a country</option>
+                            <option value="Argentina">Argentina</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Austria">Austria</option>
+                            <option value="Bahrain">Bahrain</option>
+                            <option value="Belgium">Belgium</option>
+                            <option value="Brazil">Brazil</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Chile">Chile</option>
+                            <option value="China">China</option>
+                            <option value="Colombia">Colombia</option>
+                            <option value="Costa Rica">Costa Rica</option>
+                            <option value="Czech Republic">Czech Republic</option>
+                            <option value="Denmark">Denmark</option>
+                            <option value="Ecuador">Ecuador</option>
+                            <option value="Egypt">Egypt</option>
+                            <option value="Finland">Finland</option>
+                            <option value="France">France</option>
+                            <option value="Germany">Germany</option>
+                            <option value="Greece">Greece</option>
+                            <option value="Hong Kong">Hong Kong</option>
+                            <option value="Hungary">Hungary</option>
+                            <option value="India">India</option>
+                            <option value="Indonesia">Indonesia</option>
+                            <option value="Ireland">Ireland</option>
+                            <option value="Israel">Israel</option>
+                            <option value="Italy">Italy</option>
+                            <option value="Japan">Japan</option>
+                            <option value="Kuwait">Kuwait</option>
+                            <option value="Luxembourg">Luxembourg</option>
+                            <option value="Malaysia">Malaysia</option>
+                            <option value="Mexico">Mexico</option>
+                            <option value="Morocco">Morocco</option>
+                            <option value="Netherlands">Netherlands</option>
+                            <option value="New Zealand">New Zealand</option>
+                            <option value="Nigeria">Nigeria</option>
+                            <option value="Norway">Norway</option>
+                            <option value="Oman">Oman</option>
+                            <option value="Pakistan">Pakistan</option>
+                            <option value="Panama">Panama</option>
+                            <option value="Peru">Peru</option>
+                            <option value="Philippines">Philippines</option>
+                            <option value="Poland">Poland</option>
+                            <option value="Portugal">Portugal</option>
+                            <option value="Qatar">Qatar</option>
+                            <option value="Romania">Romania</option>
+                            <option value="Saudi Arabia">Saudi Arabia</option>
+                            <option value="Singapore">Singapore</option>
+                            <option value="South Africa">South Africa</option>
+                            <option value="South Korea">South Korea</option>
+                            <option value="Spain">Spain</option>
+                            <option value="Sweden">Sweden</option>
+                            <option value="Switzerland">Switzerland</option>
+                            <option value="Taiwan">Taiwan</option>
+                            <option value="Thailand">Thailand</option>
+                            <option value="Turkey">Turkey</option>
+                            <option value="Ukraine">Ukraine</option>
+                            <option value="United Arab Emirates">United Arab Emirates</option>
+                            <option value="UK">UK</option>
+                            <option value="USA">USA</option>
+                            <option value="Uruguay">Uruguay</option>
+                            <option value="Venezuela">Venezuela</option>
+                            <option value="Vietnam">Vietnam</option>
+                        </select>
+                        <small class="form-text text-muted">Select a country from the list.</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Start Scraping</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loading" class="text-center my-4" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <p>Scraping in progress...</p>
+        </div>
+
+        <!-- Job Listings Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Job Listings</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped" id="jobs-table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Title</th>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th>Date Posted</th>
+                            <th>Job Type</th>
+                            <th>Salary</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Job listings will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-right">
+                <a href="/download" class="btn btn-success">Download CSV</a>
+            </div>
+        </div>
+
+        <!-- Download Links Section -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5>Download Links</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group" id="downloads-list">
+                    <!-- Download links will be appended here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- PapaParse for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
